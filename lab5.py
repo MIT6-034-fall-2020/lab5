@@ -130,7 +130,14 @@ def probability_joint(net, hypothesis):
     
 def probability_marginal(net, hypothesis):
     "Computes a marginal probability as a sum of joint probabilities"
-    raise NotImplementedError
+    """
+    Find all the combinations of joints where the hypothesis conditional holds
+    Then sum over to get the marginal
+    """
+    all_vars = net.get_variables()
+    joints = net.combinations(all_vars, hypothesis)
+    prob = sum([probability_joint(net, j) for j in joints])
+    return prob
 
 def probability_conditional(net, hypothesis, givens=None):
     "Computes a conditional probability as a ratio of marginal probabilities"
