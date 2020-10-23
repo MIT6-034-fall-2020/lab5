@@ -223,10 +223,57 @@ def is_structurally_independent(net, var1, var2, givens=None):
     Return True if var1, var2 are conditionally independent given givens,
     based on the structure of the Bayes net, otherwise False.
     Uses structural independence only (not numerical independence).
+    
+    Using d-separation:
+    1. Get all the variables mention in var1, var2, givens
+    2. Gather all the ancestors (use ancestor functions)
+    3. Create a subnet of the ancestors (use subnet function)
+    4. Draw lines between parent pairs (link all parents) 
+        Double for loop with .link command
+    5. Make bidirectional
+    6. Drop the given
+    7. Read off the graph
     """
-    raise NotImplementedError
 
+    # Finding the subnet_vars (steps 1-3)
+    subnet_vars = set()
 
+    subnet_vars.add(var1)
+    subnet_vars.update(get_ancestors(net, var1))
+    subnet_vars.add(var2)
+    subnet_vars.update(get_ancestors(net, var2))
+    if givens != None:
+        given_vars = set(givens.keys())
+        subnet_vars.update(given_vars)
+        
+        for var in given_vars:
+            subnet_vars.update(get_ancestors(net, var))
+
+    newNet = net.subnet(subnet_vars)
+    print (newNet)
+
+    # connect parent pairs
+    ancestral_vars = newNet.get_variables()
+    for var in ancestral_vars:
+        parents = list(newNet.get_parents(var))
+        for m in range(len(parents)-1):
+            for n in range(m+1, len(parents)):
+               newNet.link(parents[m], parents[n])
+    print (newNet)
+    # make bidirectional
+    newNet.make_bidirectional()
+
+    # drop the given
+    if givens != None:
+        for var in given_vars:
+            newNet.remove_variable(var)
+
+    # read off the graph
+    if newNet.find_path(var1, var2) == None:
+        return True
+    else:
+        return False
+     
 #### SURVEY ####################################################################
 
 NAME = "Nabib Ahmed"
