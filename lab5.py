@@ -230,6 +230,8 @@ def is_structurally_independent(net, var1, var2, givens=None):
     3. Create a subnet of the ancestors (use subnet function)
     4. Draw lines between parent pairs (link all parents) 
         Double for loop with .link command
+        Make sure to have a separate unmodified ancestral net as
+            as we would be changing the parents as we iterate
     5. Make bidirectional
     6. Drop the given
     7. Read off the graph
@@ -249,17 +251,17 @@ def is_structurally_independent(net, var1, var2, givens=None):
         for var in given_vars:
             subnet_vars.update(get_ancestors(net, var))
 
+    ancestral = net.subnet(subnet_vars)
     newNet = net.subnet(subnet_vars)
-    print (newNet)
 
     # connect parent pairs
-    ancestral_vars = newNet.get_variables()
+    ancestral_vars = ancestral.get_variables()
     for var in ancestral_vars:
-        parents = list(newNet.get_parents(var))
+        parents = list(ancestral.get_parents(var))
         for m in range(len(parents)-1):
             for n in range(m+1, len(parents)):
                newNet.link(parents[m], parents[n])
-    print (newNet)
+
     # make bidirectional
     newNet.make_bidirectional()
 
