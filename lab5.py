@@ -36,7 +36,13 @@ def get_descendants(net, var):
 
 def get_nondescendants(net, var):
     "Returns a set containing the non-descendants of var"
-    raise NotImplementedError
+    # Set operation: nondescedants = all nodes - descedeants - self 
+    all_vars = set(net.get_variables())
+    descendants = get_descendants(net, var)
+    self_set = {var}
+    nondescendants = all_vars - descendants - self_set
+    return nondescendants
+
 
 
 #### Part 2: Computing Probability #############################################
