@@ -229,9 +229,9 @@ def is_structurally_independent(net, var1, var2, givens=None):
 
 #### SURVEY ####################################################################
 
-NAME = None
-COLLABORATORS = None
-HOW_MANY_HOURS_THIS_LAB_TOOK = None
-WHAT_I_FOUND_INTERESTING = None
-WHAT_I_FOUND_BORING = None
-SUGGESTIONS = None
+NAME = "Nabib Ahmed"
+COLLABORATORS = "None"
+HOW_MANY_HOURS_THIS_LAB_TOOK = "6"
+WHAT_I_FOUND_INTERESTING = "The probability concepts, especially the chain rule."
+WHAT_I_FOUND_BORING = "Nothing; great lab."
+SUGGESTIONS = "Great lab and great instruction, no change recommended."
