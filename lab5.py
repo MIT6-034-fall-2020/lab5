@@ -175,9 +175,22 @@ def probability(net, hypothesis, givens=None):
 def number_of_parameters(net):
     """
     Computes the minimum number of parameters required for the Bayes net.
+    Formula:
+    product of domain size(parents) * (domain size current var - 1)
+    if parents = [], product of domain size(parents) = 1
     """
-    raise NotImplementedError
+    all_vars = net.get_variables()
+    parameters = 0
 
+    for var in all_vars:
+        parents = list(net.get_parents(var))
+
+        if parents == []:
+            parameters += len(net.get_domain(var)) - 1
+        else:
+            parent_domain = [len(net.get_domain(p)) for p in parents]
+            parameters += product(parent_domain) * (len(net.get_domain(var)) - 1)
+    return parameters
 
 #### Part 4: Independence ######################################################
 
