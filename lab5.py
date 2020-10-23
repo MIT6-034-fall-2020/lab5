@@ -116,7 +116,17 @@ def probability_lookup(net, hypothesis, givens=None):
 
 def probability_joint(net, hypothesis):
     "Uses the chain rule to compute a joint probability"
-    raise NotImplementedError
+    """
+    Hypothesis represents a valid joint probability (that is, contains every variable in the Bayes net).
+    Utilize topological sort (from bottom to top) to find order and then chain rule
+    """
+    varlist = net.topological_sort()
+    varlist.reverse()
+    probs = []
+    for i, var in enumerate(varlist):
+        prob = probability_lookup(net, {var: hypothesis[var]}, {v: hypothesis[v] for v in varlist[i+1:]})
+        probs.append(prob)
+    return product(probs)
     
 def probability_marginal(net, hypothesis):
     "Computes a marginal probability as a sum of joint probabilities"
