@@ -141,11 +141,33 @@ def probability_marginal(net, hypothesis):
 
 def probability_conditional(net, hypothesis, givens=None):
     "Computes a conditional probability as a ratio of marginal probabilities"
-    raise NotImplementedError
+    """
+    If given == None, return marginal (if joint, marginal will still work)
+    If given, we use ratio 
+    Edge case, given has info on hypothesis directly
+        Given has info that contradicts hypothesis, returns 0
+            check by comparing dictionary (merge from two direction should be the same)
+        Given info that don't contradicts, normal ratios
+    """
+    if givens == None:
+        return probability_marginal(net, hypothesis)
     
+    d1 = dict(hypothesis, **givens)
+    d2 = dict(givens, **hypothesis)
+    if d1 != d2:
+        return 0
+    else:
+        return probability_marginal(net, d1) / probability_marginal(net, givens)
+
+
 def probability(net, hypothesis, givens=None):
     "Calls previous functions to compute any probability"
-    raise NotImplementedError
+    """
+    Joint probability is special case of marginal (all variables assigned)
+    Marginal probability is special case of conditional (condition is None)
+    Thus all probability is conditional probability
+    """
+    return probability_conditional(net, hypothesis, givens)
 
 
 #### Part 3: Counting Parameters ###############################################
