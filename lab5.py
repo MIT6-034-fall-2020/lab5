@@ -84,7 +84,35 @@ def simplify_givens(net, var, givens):
     
 def probability_lookup(net, hypothesis, givens=None):
     "Looks up a probability in the Bayes net, or raises LookupError"
-    raise NotImplementedError
+    """
+    Algorithm:
+    - hypothesis should be singleton, givens should be parents or simplify to them
+    - check hypothesis size for length 1
+    - two cases: 
+        1. given = None 
+            check the hypothesis (do error checkup)
+                with error, only return LookupError
+        2. given != None
+            simplify_givens
+            check hypothesis (do error checkup)
+    """
+    # checks if hypothesis has one var
+    if len(hypothesis.keys()) != 1:
+        raise LookupError
+    else:
+        var = list(hypothesis.keys())[0]
+
+    if givens == None:
+        try:
+            return net.get_probability(hypothesis)
+        except:
+            raise LookupError
+    else:
+        simplified_givens = simplify_givens(net, var, givens)
+        try:
+            return net.get_probability(hypothesis, simplified_givens)
+        except:
+            raise LookupError
 
 def probability_joint(net, hypothesis):
     "Uses the chain rule to compute a joint probability"
