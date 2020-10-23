@@ -7,6 +7,7 @@ from nets import *
 #### Part 1: Warm-up; Ancestors, Descendents, and Non-descendents ##############
 
 def get_ancestors(net, var):
+    "Returns a set containing the ancestors of var"
     # use DFS queue approach to work backwards
     ancestors = net.get_parents(var)
     queue = list(net.get_parents(var))
@@ -21,7 +22,17 @@ def get_ancestors(net, var):
 
 def get_descendants(net, var):
     "Returns a set containing the descendants of var"
-    raise NotImplementedError
+    # use DFS queue approach to work forward
+    descendants = net.get_children(var)
+    queue = list(net.get_children(var))
+
+    while queue:
+        curr = queue[0]
+        queue.pop(0)
+        queue.extend(list(net.get_children(curr)))
+        descendants.update(net.get_children(curr))
+    
+    return descendants
 
 def get_nondescendants(net, var):
     "Returns a set containing the non-descendants of var"
