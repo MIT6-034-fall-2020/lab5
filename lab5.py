@@ -53,8 +53,34 @@ def simplify_givens(net, var, givens):
     simplified list of givens, keeping only parents.  Does not modify original
     givens.  Otherwise, if not all parents are given, or if a descendant is
     given, returns original givens.
+    
+    Algorithm:
+    - Get descedants of var, check if overlap with given (intersection not empty)
+        - If true: return given 
+        - If false, move to the next check
+    - Get the parents and check if subset of given
+        - If true, remove all nondescendants except parents (i.e. return parents)
+        - If false, return given
     """
-    raise NotImplementedError
+
+    # make set of conditional variables
+    given_vars = set(givens.keys())
+
+    # checks for descendants in the given (true if empty)
+    descendants = get_descendants(net, var)
+    if given_vars.intersection(descendants): 
+        return givens
+
+    # check for parents in given
+    parents = net.get_parents(var)
+    if parents.issubset(given_vars):
+        # new_givens = {}
+        # for parent in parents:
+        #     new_givens[parent] = givens[parent]
+        return {p: givens[p] for p in parents}
+    else:
+        return givens
+
     
 def probability_lookup(net, hypothesis, givens=None):
     "Looks up a probability in the Bayes net, or raises LookupError"
