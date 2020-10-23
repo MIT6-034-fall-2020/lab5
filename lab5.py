@@ -198,8 +198,25 @@ def is_independent(net, var1, var2, givens=None):
     """
     Return True if var1, var2 are conditionally independent given givens,
     otherwise False. Uses numerical independence.
+
+    Check all values on var1 and var2 domain
+    If ever false, return false.
     """
-    raise NotImplementedError
+    d1 = net.get_domain(var1)
+    d2 = net.get_domain(var2)
+    for v1 in d1:
+        for v2 in d2:
+            h1 = {var1: v1}
+            h2 = {var2: v2}
+            if givens == None:
+                new_givens = h2
+            else:
+                new_givens = dict(givens, **h2)
+            p1 = probability(net, h1, givens)
+            p2 = probability(net, h1, new_givens)
+            if not approx_equal(p1, p2):
+                return False
+    return True
     
 def is_structurally_independent(net, var1, var2, givens=None):
     """
